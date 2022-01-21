@@ -10,7 +10,7 @@ const fetchCharacters = async (queries) => {
 
 const Characters = () => {
   const [page, setPage] = useState(1);
-  const { data, status, isPreviousData } = useQuery(['characters', page], fetchCharacters, {
+  const { data, status,isLoading, isPreviousData } = useQuery(['characters', page], fetchCharacters, {
     /* staleTime: 0,
     cacheTime: 10,
     onSuccess: () => console.log('okidoki') */
@@ -23,7 +23,7 @@ const Characters = () => {
     <>
       <h1>Characters</h1>
       <p>{status}</p>
-      {status === 'loading' ? (
+      {isLoading ? (
         <Box sx={{
           display: 'flex',
           justifyContent: 'center'
