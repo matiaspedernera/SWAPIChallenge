@@ -1,29 +1,23 @@
 import * as React from 'react';
-import { CircularProgress, Box, Card, Link, CardContent, Grid, Button, ButtonGroup } from '@mui/material';
+import { CircularProgress, Box, Card, Link, CardContent, Grid, Button, Chip } from '@mui/material';
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 import { useState, useEffect } from "react";
 
-const fetchCharacters = async (queryKey) => {
-  console.log(queryKey.queryKey[1])
-  const res = await fetch(`https://swapi.dev/api/people/?page=${queryKey.queryKey[2]}`);
+const fetchCharacters = async (queries) => {
+  const res = await fetch(`https://swapi.dev/api/people/?page=${queries.queryKey[1]}`);
   return res.json();
 }
 
 const Characters = () => {
   const [page, setPage] = useState(1);
-  const { data, status } = useQuery(['characters', 'Hi', page], fetchCharacters, {
+  const { data, status, isPreviousData } = useQuery(['characters', page], fetchCharacters, {
     /* staleTime: 0,
     cacheTime: 10,
     onSuccess: () => console.log('okidoki') */
+    keepPreviousData: true
   })
   console.log(data);
   const preventDefault = (event) => event.preventDefault();
-
-  const pages = [
-    <Button onClick={() => setPage(1)} key="one">One</Button>,
-    <Button onClick={() => setPage(2)} key="two">Two</Button>,
-    <Button onClick={() => setPage(3)} key="three">Three</Button>,
-  ];
 
   return (
     <>
@@ -60,16 +54,28 @@ const Characters = () => {
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'center',
               '& > *': {
                 m: 1,
               },
             }}
           >
-            <ButtonGroup color="warning" aria-label="medium secondary button group">
-              {pages}
-            </ButtonGroup>
+            <Button
+              variant="outlined"
+              color="warning"
+              onClick={() => setPage(old => Math.max(old - 1, 1))}
+              disabled={page === 1}>Previous Page</Button>
+            <Chip label={page} color="warning" />
+            <Button
+              variant="outlined"
+              color="warning"
+              onClick={() => {
+                if (!isPreviousData && data.next) {
+                  setPage(old => old + 1)
+                }
+              }}
+              disabled={isPreviousData || !data?.next}>Next Page</Button>
           </Box>
         </>
       )}
