@@ -1,7 +1,6 @@
-import * as React from 'react';
 import { CircularProgress, Box, Card, Link, CardContent, Grid, Button, Chip } from '@mui/material';
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
+import { useState } from "react";
 
 const fetchCharacters = async (queries) => {
   const res = await fetch(`https://swapi.dev/api/people/?page=${queries.queryKey[1]}`);
@@ -10,14 +9,13 @@ const fetchCharacters = async (queries) => {
 
 const Characters = () => {
   const [page, setPage] = useState(1);
-  const { data, status,isLoading, isPreviousData } = useQuery(['characters', page], fetchCharacters, {
+  const { data, status, isLoading, isPreviousData } = useQuery(['characters', page], fetchCharacters, {
     /* staleTime: 0,
     cacheTime: 10,
     onSuccess: () => console.log('okidoki') */
     keepPreviousData: true
   })
   console.log(data);
-  const preventDefault = (event) => event.preventDefault();
 
   return (
     <>
@@ -44,7 +42,7 @@ const Characters = () => {
                     <CardContent>
                       <h2>{char.name}</h2>
                     </CardContent>
-                    <Link href="/characters" underline='hover' onClick={preventDefault}>Details</Link>
+                    <Link href={`/characters/${i + 1}`} underline='hover'>Details</Link>
                   </Card>
                 </Grid>
               )

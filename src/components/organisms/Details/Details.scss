@@ -1,0 +1,12 @@
+.characterCard {
+  background-color: dimgray;
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+
+  &__content {
+    &--info {
+      text-align: start;
+    }
+  }
+}
